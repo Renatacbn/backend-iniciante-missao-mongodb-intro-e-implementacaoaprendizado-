@@ -53,28 +53,24 @@ async function main() {
   app.use(express.json())
 
   // Implementando Endpoint Creat [POST](criar informação) /personagem
-  app.post('/personagem', function (req, res) {
+  app.post('/personagem', async function (req, res) {
 
     // Função para acessar o Body da requisição através do req.body
-    const body = req.body
-
-    //  Função para adicionar um novo item na lista acessando a propriedade 'nome' no body
-    const novoItem = body.nome
+    const novoItem = req.body
 
     // Função para checar se o 'nome' está no body, e não foi modificado
-    if (!novoItem) {
+    if (!novoItem || !novoItem.nome) {
       return res.status(400).send('Corpo da requisição deve conter a propriedade `nome`.')
     }
     // Função para checar se o novoItem está na lista ou não, e para que não duplique 
-    if (lista.includes(novoItem)) {
-      return res.status(409).send('Este item já existe na lista.')
-    }
+    // if (lista.includes(novoItem)) {
+    //   return res.status(409).send('Este item já existe na lista.')
+    // }
 
-    // Adicionar na lista
-    lista.push(novoItem)
-
+    // Adicionar na collection
+    await collection.insertOne(novoItem)
     // Função para exibir uma mensagem de sucesso
-    res.status(201).send('Item adicionado com sucesso: ' + novoItem)
+    res.status(201).send(novoItem)
   })
 
   // Implementando Endpoint Update [PUT](atualizar informação completa) /personagem/:id
