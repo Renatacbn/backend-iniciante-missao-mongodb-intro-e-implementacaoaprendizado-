@@ -74,36 +74,36 @@ async function main() {
   })
 
   // Implementando Endpoint Update [PUT](atualizar informação completa) /personagem/:id
-  app.put('/personagem/:id', function (req, res) {
+  app.put('/personagem/:id', async function (req, res) {
 
     // Acessando o ID dos parâmetros de rota
     const id = req.params.id
 
     // Função para checar se o item do ID - 1 está na lista, exibindo uma mensagem caso não esteja
-    if (!lista[id - 1]) {
-      return res.status(404).send('Item não encontrado. ')
-    }
+    // if (!lista[id - 1]) {
+    //   return res.status(404).send('Item não encontrado. ')
+    // }
 
     // Função para acessar o Body da requisiçao
-    const body = req.body
+    const novoItem = req.body
 
-    // Função para acessar a propriedade 'nome' do body
-    const novoItem = body.nome
-
+   
     // Função para checar se o 'nome' está no body e não foi modificado.
-    if (!novoItem) {
+    if ( !novoItem || !novoItem.nome) {
       return res.status(400).send('Corpo da requisição deve conter a propriedade `nome`.')
     }
     // Função para checar se o novoItem está na lista ou não, e para que não duplique 
-    if (lista.includes(novoItem)) {
-      return res.status(409).send('Este item já existe na lista.')
-    }
+    // if (lista.includes(novoItem)) {
+    //   return res.status(409).send('Este item já existe na lista.')
+    // }
 
-    // Função para atualizar na lista novoItem pelo ID -1
-    lista[id - 1] = novoItem
-
+    // Função para atualizar na collection novoItem pelo ID 
+      await collection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: novoItem }
+    )
     // Função para exibir a mensagem de sucesso
-    res.send('Item atualizado com sucesso: ' + id + ' - ' + novoItem)
+    res.send(novoItem)
   })
 
   // Implementação do Endpoint Delete [DELETE] /personagem/:id
