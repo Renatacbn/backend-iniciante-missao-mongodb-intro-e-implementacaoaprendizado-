@@ -25,9 +25,11 @@ async function main() {
   // Implementando Endpoint Read All (irá funcionar com GET)/ neste ponto pensar em qual será a entidade ex.personagem
 
   // Função para exibir em um único endpoint de Read All toda a lista 
-  app.get('/personagem', function (req, res) {
+  app.get('/personagem', async function (req, res) {
+    // Acessamos a lista de itens na collection mongodb
+    const itens = await collection.find().toArray()
     // Função do 'filter.boolean' é para que os espaços quando deletar, não aparecer em vizualização como 'null' 
-    res.send(lista.filter(Boolean))
+    res.send(itens)
   })
 
   // Implementando Endpoint Read By Id [Get](obter informação) /personagem/:id(os dois pontos id funcionam para dizer que é uma especificação direcionada )
